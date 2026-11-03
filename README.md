@@ -6,6 +6,8 @@ AI コールセンターの本体はインターネットに公開せず、**こ
 
 **デモ（ログイン不要・架空データ）**：https://mismd2026.github.io/ai-callcenter-portal/
 
+**紹介サイト（処理能力・学習・料金の試算）**：https://mismd2026.github.io/ai-callcenter-site/ ／ リポジトリ：[ai-callcenter-site](https://github.com/mismd2026/ai-callcenter-site)
+
 > English: Customer portal and operator console for a self-hosted AI call center. React + TypeScript frontend, FastAPI backend, Firebase Authentication with custom claims for tenant isolation, Cloud Run + private-IP Cloud SQL provisioned with Terraform. The AI core stays off the internet.
 
 ## 画面
