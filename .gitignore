@@ -1,0 +1,29 @@
+# Node / Web
+node_modules/
+web/dist/
+web/dist-demo/
+*.tsbuildinfo
+
+# Python / API
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+*.db
+
+# 設定・秘密情報
+.env
+.env.*
+!web/.env.demo
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+
+.DS_Store

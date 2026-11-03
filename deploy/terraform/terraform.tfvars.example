@@ -1,0 +1,5 @@
+# このファイルを terraform.tfvars にコピーして値を入れる（terraform.tfvars はコミットしない）
+project_id       = "your-project-id"
+region           = "asia-northeast1"
+image            = "asia-northeast1-docker.pkg.dev/your-project-id/portal/portal:v1"
+firebase_api_key = "Firebase コンソールの「プロジェクトの設定」にある Web API キー"
