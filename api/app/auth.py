@@ -5,9 +5,16 @@
 URL や画面からは一切受け取らない。
 
 カスタムクレームの例（scripts/set_claims.py で設定する）:
-    顧客:         {"role": "company_admin", "company_code": "ACME-TOKYO"}
-    顧客（閲覧）: {"role": "viewer",        "company_code": "ACME-TOKYO"}
+    契約管理者:   {"role": "company_admin", "company_code": "ACME-TOKYO"}
+    オペレーター: {"role": "operator",      "company_code": "ACME-TOKYO"}
+    閲覧者:       {"role": "viewer",        "company_code": "ACME-TOKYO"}
     運用管理者:   {"role": "ops_admin"}
+
+ロールとできること:
+    company_admin  ダッシュボード、CMS（FAQ・未回答レビュー・応答設定）、通話入力、解約の申し込み
+    operator       通話入力と FAQ の検索（ダッシュボードと CMS の編集は不可）
+    viewer         ダッシュボードの閲覧のみ
+    ops_admin      運用コンソール（全テナント）、クレジットの付与
 """
 
 from __future__ import annotations
@@ -17,7 +24,7 @@ from typing import Annotated, Protocol
 
 from fastapi import Depends, HTTPException, Request, status
 
-CUSTOMER_ROLES = {"company_admin", "viewer"}
+CUSTOMER_ROLES = {"company_admin", "operator", "viewer"}
 OPS_ROLE = "ops_admin"
 
 
@@ -104,19 +111,24 @@ def get_principal(request: Request) -> Principal:
     )
 
 
-def require_customer(p: Annotated[Principal, Depends(get_principal)]) -> Principal:
-    if p.role not in CUSTOMER_ROLES:
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "顧客向けの画面です")
-    return p
+def _require(roles: set[str], message: str):
+    def dependency(p: Annotated[Principal, Depends(get_principal)]) -> Principal:
+        if p.role not in roles:
+            raise HTTPException(status.HTTP_403_FORBIDDEN, message)
+        return p
+
+    return dependency
 
 
-def require_company_admin(p: Annotated[Principal, Depends(require_customer)]) -> Principal:
-    if p.role != "company_admin":
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "契約管理者のみ操作できます")
-    return p
-
-
-def require_ops(p: Annotated[Principal, Depends(get_principal)]) -> Principal:
-    if p.role != OPS_ROLE:
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "運用管理者のみ閲覧できます")
-    return p
+# 顧客ロールなら誰でも（画面上部の会社名など）
+require_customer = _require(CUSTOMER_ROLES, "顧客向けの画面です")
+# ダッシュボード（利用状況・請求など）
+require_dashboard = _require(
+    {"company_admin", "viewer"}, "ダッシュボードを閲覧する権限がありません"
+)
+# CMS の編集・解約の申し込み
+require_company_admin = _require({"company_admin"}, "契約管理者のみ操作できます")
+# 通話入力と FAQ の検索
+require_call_handler = _require({"company_admin", "operator"}, "通話入力の権限がありません")
+# 運用コンソール
+require_ops = _require({OPS_ROLE}, "運用管理者のみ閲覧できます")

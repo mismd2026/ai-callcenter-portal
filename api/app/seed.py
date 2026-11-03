@@ -11,6 +11,7 @@ from sqlalchemy import func, insert, select
 from sqlalchemy.engine import Engine
 
 from . import db
+from .clock import iso, now_local
 
 # fixtures のキー → テーブル（外部キーの順に並べる）
 _DIRECT = [
@@ -28,6 +29,7 @@ _DIRECT = [
     ("system_logs", db.system_logs),
     ("cost_usage_daily", db.cost_usage_daily),
     ("invoices", db.invoices),
+    ("credits", db.credits),
 ]
 
 
@@ -70,9 +72,9 @@ def seed_if_empty(engine: Engine, fixture_path: Path, now: datetime | None = Non
         conn.execute(insert(db.calls), call_rows)
 
         # 「今」の状況：通話中のコール、本日のエスカレーション・未回答
-        now = now or datetime.now()
-        stamp = (now - timedelta(minutes=5)).strftime("%Y-%m-%dT%H:%M:%S")
-        live_calls, esc_rows, unanswered_rows = [], [], []
+        now = now or now_local()
+        stamp = iso(now - timedelta(minutes=5))
+        live_calls, esc_rows = [], []
         for live in data["live"]:
             code = live["company_code"]
             for i in range(live["active_calls"]):
@@ -91,17 +93,50 @@ def seed_if_empty(engine: Engine, fixture_path: Path, now: datetime | None = Non
                 {"call_id": f"{code}-live-{i}", "reason": "有人対応の希望", "timestamp": stamp}
                 for i in range(live["escalations_today"])
             ]
-            unanswered_rows += [
-                {
-                    "call_id": f"{code}-live-{i}",
-                    "question_text": "FAQにない質問",
-                    "timestamp": stamp,
-                }
-                for i in range(live["unanswered_today"])
-            ]
         conn.execute(insert(db.calls), live_calls)
         if esc_rows:
             conn.execute(insert(db.escalations), esc_rows)
-        if unanswered_rows:
-            conn.execute(insert(db.unanswered_questions), unanswered_rows)
+
+        # AI が答えられなかった質問（timestamp が null のものは本日の分）
+        unanswered = [
+            {
+                "company_code": u["company_code"],
+                "question_text": u["question_text"],
+                "timestamp": u["timestamp"] or stamp,
+            }
+            for u in data.get("unanswered_questions", [])
+        ]
+        if unanswered:
+            conn.execute(insert(db.unanswered_questions), unanswered)
+
+        # FAQ と質問の言い換え
+        for f in data.get("faqs", []):
+            faq_id = conn.execute(
+                insert(db.faq_entries).values(
+                    company_code=f["company_code"],
+                    category_code=f["category_code"],
+                    answer_text=f["answer_text"],
+                    status=f["status"],
+                    source=f["source"],
+                    updated_at=f["updated_at"],
+                    updated_by="seed",
+                )
+            ).inserted_primary_key[0]
+            conn.execute(
+                insert(db.faq_questions),
+                [{"faq_id": faq_id, "question_text": q} for q in f["questions"]],
+            )
+
+        settings_rows = [
+            {
+                **r,
+                "business_days": json.dumps(r["business_days"]),
+                "escalation_keywords": json.dumps(r["escalation_keywords"], ensure_ascii=False),
+                "updated_at": stamp,
+                "updated_by": "seed",
+            }
+            for r in data.get("response_settings", [])
+        ]
+        if settings_rows:
+            conn.execute(insert(db.response_settings), settings_rows)
     return True

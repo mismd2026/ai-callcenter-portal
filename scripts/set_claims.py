@@ -10,6 +10,8 @@
 使い方:
     # 顧客（契約管理者）
     python scripts/set_claims.py tanaka@acme.example company_admin ACME-TOKYO
+    # 顧客（オペレーター：通話入力と FAQ の検索）
+    python scripts/set_claims.py yamada@acme.example operator ACME-TOKYO
     # 顧客（閲覧者）
     python scripts/set_claims.py suzuki@acme.example viewer ACME-TOKYO
     # 運用管理者
@@ -23,7 +25,7 @@ import argparse
 import firebase_admin
 from firebase_admin import auth
 
-CUSTOMER_ROLES = {"company_admin", "viewer"}
+CUSTOMER_ROLES = {"company_admin", "operator", "viewer"}
 
 
 def main() -> None:

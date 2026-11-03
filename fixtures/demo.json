@@ -69,7 +69,9 @@
    "price_amount": 1000000,
    "concurrent_call_limit": 100,
    "valid_from": "2026-01-10",
-   "status": "active"
+   "status": "active",
+   "billing_model": "subscription",
+   "per_call_fee": null
   },
   {
    "company_code": "ACME-OSAKA",
@@ -79,7 +81,9 @@
    "price_amount": 120000,
    "concurrent_call_limit": 10,
    "valid_from": "2026-04-01",
-   "status": "active"
+   "status": "active",
+   "billing_model": "metered",
+   "per_call_fee": 30
   },
   {
    "company_code": "MIDORI-MAIN",
@@ -89,13 +93,19 @@
    "price_amount": 120000,
    "concurrent_call_limit": 10,
    "valid_from": "2026-05-01",
-   "status": "active"
+   "status": "active",
+   "billing_model": "subscription",
+   "per_call_fee": null
   }
  ],
  "roles": [
   {
    "role_code": "company_admin",
    "role_name": "契約管理者"
+  },
+  {
+   "role_code": "operator",
+   "role_name": "オペレーター"
   },
   {
    "role_code": "viewer",
@@ -134,6 +144,22 @@
    "display_name": "森 さくら",
    "email": "mori@midori.example",
    "created_at": "2026-04-01T00:00:00"
+  },
+  {
+   "user_code": "u_yamada",
+   "tenant_code": "ACME",
+   "company_code": "ACME-TOKYO",
+   "display_name": "山田 美咲",
+   "email": "yamada@acme.example",
+   "created_at": "2026-04-01T00:00:00"
+  },
+  {
+   "user_code": "u_ito",
+   "tenant_code": "MIDORI",
+   "company_code": "MIDORI-MAIN",
+   "display_name": "伊藤 直樹",
+   "email": "ito@midori.example",
+   "created_at": "2026-04-01T00:00:00"
   }
  ],
  "user_roles": [
@@ -155,6 +181,16 @@
   {
    "user_code": "u_mori",
    "role_code": "company_admin",
+   "company_code": "MIDORI-MAIN"
+  },
+  {
+   "user_code": "u_yamada",
+   "role_code": "operator",
+   "company_code": "ACME-TOKYO"
+  },
+  {
+   "user_code": "u_ito",
+   "role_code": "operator",
    "company_code": "MIDORI-MAIN"
   }
  ],
@@ -2685,6 +2721,391 @@
    "total_amount": 153931,
    "currency": "JPY",
    "status": "pending"
+  }
+ ],
+ "faqs": [
+  {
+   "company_code": "ACME-TOKYO",
+   "category_code": "cancellation",
+   "questions": [
+    "解約したいのですが手続きを教えてください",
+    "解約方法を知りたい"
+   ],
+   "answer_text": "マイページにログイン後「契約管理」から「解約手続き」を選び、画面の案内に従って進めてください。完了後に確認メールが届きます。",
+   "status": "published",
+   "source": "manual",
+   "updated_at": "2026-05-11T10:00:00"
+  },
+  {
+   "company_code": "ACME-TOKYO",
+   "category_code": "billing",
+   "questions": [
+    "料金プランを変更したいです",
+    "プランを上げたい"
+   ],
+   "answer_text": "マイページの「契約管理」から「プラン変更」を選べます。変更は次回の請求日から反映されます。",
+   "status": "published",
+   "source": "manual",
+   "updated_at": "2026-06-12T10:00:00"
+  },
+  {
+   "company_code": "ACME-TOKYO",
+   "category_code": "billing",
+   "questions": [
+    "請求書を再発行してほしいです",
+    "請求書をもう一度送ってほしい"
+   ],
+   "answer_text": "マイページの「請求履歴」から過去の請求書を PDF でダウンロードいただけます。",
+   "status": "published",
+   "source": "manual",
+   "updated_at": "2026-07-13T10:00:00"
+  },
+  {
+   "company_code": "ACME-TOKYO",
+   "category_code": "billing",
+   "questions": [
+    "支払いが遅れた場合はどうなりますか"
+   ],
+   "answer_text": "お支払い期日から7日を超えると、サービスの一部機能が制限される場合があります。事情がある場合は事前にご相談ください。",
+   "status": "published",
+   "source": "manual",
+   "updated_at": "2026-08-14T10:00:00"
+  },
+  {
+   "company_code": "ACME-TOKYO",
+   "category_code": "usage",
+   "questions": [
+    "パスワードを忘れました",
+    "ログインできません"
+   ],
+   "answer_text": "ログイン画面の「パスワードを忘れた場合」から再設定用のメールを送信できます。",
+   "status": "published",
+   "source": "manual",
+   "updated_at": "2026-04-15T10:00:00"
+  },
+  {
+   "company_code": "ACME-TOKYO",
+   "category_code": "usage",
+   "questions": [
+    "利用できる時間帯を教えてください"
+   ],
+   "answer_text": "サービスは24時間ご利用いただけます。サポート窓口の受付は平日9時〜18時です。",
+   "status": "published",
+   "source": "manual",
+   "updated_at": "2026-05-16T10:00:00"
+  },
+  {
+   "company_code": "ACME-TOKYO",
+   "category_code": "other",
+   "questions": [
+    "法人向けの請求書払いはできますか"
+   ],
+   "answer_text": "（作成中）請求書払いの条件を経理部に確認中です。",
+   "status": "draft",
+   "source": "manual",
+   "updated_at": "2026-06-17T10:00:00"
+  },
+  {
+   "company_code": "ACME-OSAKA",
+   "category_code": "cancellation",
+   "questions": [
+    "解約したいのですが手続きを教えてください",
+    "解約方法を知りたい"
+   ],
+   "answer_text": "マイページにログイン後「契約管理」から「解約手続き」を選び、画面の案内に従って進めてください。完了後に確認メールが届きます。",
+   "status": "published",
+   "source": "manual",
+   "updated_at": "2026-05-11T10:00:00"
+  },
+  {
+   "company_code": "ACME-OSAKA",
+   "category_code": "billing",
+   "questions": [
+    "料金プランを変更したいです",
+    "プランを上げたい"
+   ],
+   "answer_text": "マイページの「契約管理」から「プラン変更」を選べます。変更は次回の請求日から反映されます。",
+   "status": "published",
+   "source": "manual",
+   "updated_at": "2026-06-12T10:00:00"
+  },
+  {
+   "company_code": "ACME-OSAKA",
+   "category_code": "billing",
+   "questions": [
+    "請求書を再発行してほしいです",
+    "請求書をもう一度送ってほしい"
+   ],
+   "answer_text": "マイページの「請求履歴」から過去の請求書を PDF でダウンロードいただけます。",
+   "status": "published",
+   "source": "manual",
+   "updated_at": "2026-07-13T10:00:00"
+  },
+  {
+   "company_code": "ACME-OSAKA",
+   "category_code": "billing",
+   "questions": [
+    "支払いが遅れた場合はどうなりますか"
+   ],
+   "answer_text": "お支払い期日から7日を超えると、サービスの一部機能が制限される場合があります。事情がある場合は事前にご相談ください。",
+   "status": "published",
+   "source": "manual",
+   "updated_at": "2026-08-14T10:00:00"
+  },
+  {
+   "company_code": "ACME-OSAKA",
+   "category_code": "usage",
+   "questions": [
+    "パスワードを忘れました",
+    "ログインできません"
+   ],
+   "answer_text": "ログイン画面の「パスワードを忘れた場合」から再設定用のメールを送信できます。",
+   "status": "published",
+   "source": "manual",
+   "updated_at": "2026-04-15T10:00:00"
+  },
+  {
+   "company_code": "ACME-OSAKA",
+   "category_code": "usage",
+   "questions": [
+    "利用できる時間帯を教えてください"
+   ],
+   "answer_text": "サービスは24時間ご利用いただけます。サポート窓口の受付は平日9時〜18時です。",
+   "status": "published",
+   "source": "manual",
+   "updated_at": "2026-05-16T10:00:00"
+  },
+  {
+   "company_code": "ACME-OSAKA",
+   "category_code": "other",
+   "questions": [
+    "法人向けの請求書払いはできますか"
+   ],
+   "answer_text": "（作成中）請求書払いの条件を経理部に確認中です。",
+   "status": "draft",
+   "source": "manual",
+   "updated_at": "2026-06-17T10:00:00"
+  },
+  {
+   "company_code": "MIDORI-MAIN",
+   "category_code": "usage",
+   "questions": [
+    "診療時間を教えてください",
+    "何時まで開いていますか"
+   ],
+   "answer_text": "平日は9時〜12時、14時〜18時、土曜日は9時〜12時です。日曜・祝日は休診です。",
+   "status": "published",
+   "source": "manual",
+   "updated_at": "2026-05-11T10:00:00"
+  },
+  {
+   "company_code": "MIDORI-MAIN",
+   "category_code": "usage",
+   "questions": [
+    "予約を変更したいです",
+    "予約の日にちを変えたい"
+   ],
+   "answer_text": "前日の17時までにお電話いただくか、Web 予約のページから変更できます。",
+   "status": "published",
+   "source": "manual",
+   "updated_at": "2026-06-12T10:00:00"
+  },
+  {
+   "company_code": "MIDORI-MAIN",
+   "category_code": "usage",
+   "questions": [
+    "駐車場はありますか"
+   ],
+   "answer_text": "建物の裏手に5台分の無料駐車場がございます。",
+   "status": "published",
+   "source": "manual",
+   "updated_at": "2026-07-13T10:00:00"
+  },
+  {
+   "company_code": "MIDORI-MAIN",
+   "category_code": "billing",
+   "questions": [
+    "クレジットカードは使えますか"
+   ],
+   "answer_text": "各種クレジットカード、交通系 IC、QR コード決済がご利用いただけます。",
+   "status": "published",
+   "source": "manual",
+   "updated_at": "2026-08-14T10:00:00"
+  },
+  {
+   "company_code": "MIDORI-MAIN",
+   "category_code": "other",
+   "questions": [
+    "オンライン診療は受けられますか"
+   ],
+   "answer_text": "（作成中）オンライン診療の開始時期を確認中です。",
+   "status": "draft",
+   "source": "manual",
+   "updated_at": "2026-04-15T10:00:00"
+  }
+ ],
+ "unanswered_questions": [
+  {
+   "company_code": "ACME-TOKYO",
+   "question_text": "領収書の宛名を変更できますか",
+   "timestamp": null
+  },
+  {
+   "company_code": "ACME-TOKYO",
+   "question_text": "海外からも電話できますか",
+   "timestamp": null
+  },
+  {
+   "company_code": "ACME-TOKYO",
+   "question_text": "担当者を指名できますか",
+   "timestamp": null
+  },
+  {
+   "company_code": "ACME-TOKYO",
+   "question_text": "API の利用上限はありますか",
+   "timestamp": null
+  },
+  {
+   "company_code": "ACME-TOKYO",
+   "question_text": "請求先を部署ごとに分けたい",
+   "timestamp": null
+  },
+  {
+   "company_code": "ACME-TOKYO",
+   "question_text": "契約書の写しがほしい",
+   "timestamp": "2026-10-25T15:15:00"
+  },
+  {
+   "company_code": "ACME-TOKYO",
+   "question_text": "年額払いにすると割引はありますか",
+   "timestamp": "2026-10-26T16:15:00"
+  },
+  {
+   "company_code": "ACME-OSAKA",
+   "question_text": "領収書の宛名を変更できますか",
+   "timestamp": null
+  },
+  {
+   "company_code": "ACME-OSAKA",
+   "question_text": "海外からも電話できますか",
+   "timestamp": null
+  },
+  {
+   "company_code": "ACME-OSAKA",
+   "question_text": "担当者を指名できますか",
+   "timestamp": "2026-10-22T12:15:00"
+  },
+  {
+   "company_code": "ACME-OSAKA",
+   "question_text": "API の利用上限はありますか",
+   "timestamp": "2026-10-23T13:15:00"
+  },
+  {
+   "company_code": "ACME-OSAKA",
+   "question_text": "請求先を部署ごとに分けたい",
+   "timestamp": "2026-10-24T14:15:00"
+  },
+  {
+   "company_code": "MIDORI-MAIN",
+   "question_text": "子どもの予防接種はしていますか",
+   "timestamp": "2026-10-20T10:15:00"
+  },
+  {
+   "company_code": "MIDORI-MAIN",
+   "question_text": "紹介状は必要ですか",
+   "timestamp": "2026-10-21T11:15:00"
+  },
+  {
+   "company_code": "MIDORI-MAIN",
+   "question_text": "車いすで入れますか",
+   "timestamp": "2026-10-22T12:15:00"
+  }
+ ],
+ "response_settings": [
+  {
+   "company_code": "ACME-TOKYO",
+   "greeting": "お電話ありがとうございます。株式会社ACME サポート窓口です。",
+   "business_hours_start": "09:00",
+   "business_hours_end": "18:00",
+   "business_days": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "after_hours_message": "本日の受付は終了しました。平日9時から18時の間におかけ直しください。",
+   "escalation_keywords": [
+    "解約",
+    "訴える",
+    "責任者",
+    "オペレーター"
+   ],
+   "max_ai_turns": 3
+  },
+  {
+   "company_code": "ACME-OSAKA",
+   "greeting": "お電話ありがとうございます。株式会社ACME 大阪支店です。",
+   "business_hours_start": "09:00",
+   "business_hours_end": "17:30",
+   "business_days": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "after_hours_message": "本日の受付は終了しました。",
+   "escalation_keywords": [
+    "解約",
+    "オペレーター"
+   ],
+   "max_ai_turns": 3
+  },
+  {
+   "company_code": "MIDORI-MAIN",
+   "greeting": "お電話ありがとうございます。みどりクリニックです。",
+   "business_hours_start": "09:00",
+   "business_hours_end": "18:00",
+   "business_days": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "after_hours_message": "本日の診療受付は終了しました。急病の方は救急相談窓口におかけください。",
+   "escalation_keywords": [
+    "痛い",
+    "苦しい",
+    "救急",
+    "受付の方"
+   ],
+   "max_ai_turns": 2
+  }
+ ],
+ "credits": [
+  {
+   "company_code": "ACME-TOKYO",
+   "amount": 50000,
+   "reason": "導入支援クレジット",
+   "granted_at": "2026-01-10",
+   "expires_at": null
+  },
+  {
+   "company_code": "ACME-OSAKA",
+   "amount": 50000,
+   "reason": "導入支援クレジット",
+   "granted_at": "2026-04-01",
+   "expires_at": null
+  },
+  {
+   "company_code": "MIDORI-MAIN",
+   "amount": 50000,
+   "reason": "導入支援クレジット",
+   "granted_at": "2026-05-01",
+   "expires_at": null
   }
  ]
 }

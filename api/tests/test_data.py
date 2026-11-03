@@ -46,13 +46,13 @@ def test_inquiry_breakdown_sums_to_100(client):
 def test_billing_total_is_license_plus_usage(client):
     data = client.get("/api/company/billing?period=2026-07", headers=TOKYO).json()
     assert data["breakdown"][0] == {"label": "基本ライセンス料", "amount": 1000000}
-    assert data["total"] == sum(b["amount"] for b in data["breakdown"])
-    assert data["invoice"]["total_amount"] == data["total"]
+    assert data["subtotal"] == sum(b["amount"] for b in data["breakdown"])
+    assert data["total"] == data["subtotal"] - data["credit_applied"]
 
 
 def test_billing_for_period_without_data_is_empty(client):
     data = client.get("/api/company/billing?period=2025-01", headers=TOKYO).json()
-    assert data == {"breakdown": [], "total": 0, "currency": "JPY", "invoice": None}
+    assert data["breakdown"] == [] and data["total"] == 0 and data["invoice"] is None
 
 
 def test_cases_include_latest_handover(client):
@@ -72,6 +72,6 @@ def test_ops_companies_show_live_status(client):
 
 def test_ops_users_by_tenant(client):
     acme = client.get("/api/ops/tenants/ACME/users", headers=OPS).json()
-    assert {u["user_code"] for u in acme} == {"u_tanaka", "u_suzuki", "u_kato"}
+    assert {u["user_code"] for u in acme} == {"u_tanaka", "u_suzuki", "u_kato", "u_yamada"}
     midori = client.get("/api/ops/tenants/MIDORI/users", headers=OPS).json()
-    assert {u["user_code"] for u in midori} == {"u_mori"}
+    assert {u["user_code"] for u in midori} == {"u_mori", "u_ito"}

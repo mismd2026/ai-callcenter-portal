@@ -36,17 +36,21 @@ plan_catalog = [
     {"plan_tier": "mid_take", "plan_label": "中間プラン（竹）", "default_concurrent_limit": 100, "tier_group": "mid"},
 ]
 
+# billing_model: subscription（月額定額・既定）/ metered（従量課金オプション：通話ごとに per_call_fee）
 licenses = [
     {"company_code": "ACME-TOKYO", "plan_tier": "mid_take", "country_code": "JP", "currency": "JPY",
      "price_amount": 1000000, "concurrent_call_limit": 100, "valid_from": "2026-01-10", "status": "active"},
+    # 大阪支店だけ、通話ごとに課金する従量課金オプションを選んでいる例
     {"company_code": "ACME-OSAKA", "plan_tier": "small", "country_code": "JP", "currency": "JPY",
-     "price_amount": 120000, "concurrent_call_limit": 10, "valid_from": "2026-04-01", "status": "active"},
+     "price_amount": 120000, "concurrent_call_limit": 10, "valid_from": "2026-04-01", "status": "active",
+     "billing_model": "metered", "per_call_fee": 30},
     {"company_code": "MIDORI-MAIN", "plan_tier": "small", "country_code": "JP", "currency": "JPY",
      "price_amount": 120000, "concurrent_call_limit": 10, "valid_from": "2026-05-01", "status": "active"},
 ]
 
 roles = [
     {"role_code": "company_admin", "role_name": "契約管理者"},
+    {"role_code": "operator", "role_name": "オペレーター"},
     {"role_code": "viewer", "role_name": "閲覧者"},
 ]
 
@@ -59,6 +63,10 @@ users = [
      "display_name": "加藤 健", "email": "kato@acme.example"},
     {"user_code": "u_mori", "tenant_code": "MIDORI", "company_code": "MIDORI-MAIN",
      "display_name": "森 さくら", "email": "mori@midori.example"},
+    {"user_code": "u_yamada", "tenant_code": "ACME", "company_code": "ACME-TOKYO",
+     "display_name": "山田 美咲", "email": "yamada@acme.example"},
+    {"user_code": "u_ito", "tenant_code": "MIDORI", "company_code": "MIDORI-MAIN",
+     "display_name": "伊藤 直樹", "email": "ito@midori.example"},
 ]
 for u in users:
     u["created_at"] = "2026-04-01T00:00:00"
@@ -68,6 +76,8 @@ user_roles = [
     {"user_code": "u_suzuki", "role_code": "viewer", "company_code": "ACME-TOKYO"},
     {"user_code": "u_kato", "role_code": "company_admin", "company_code": "ACME-OSAKA"},
     {"user_code": "u_mori", "role_code": "company_admin", "company_code": "MIDORI-MAIN"},
+    {"user_code": "u_yamada", "role_code": "operator", "company_code": "ACME-TOKYO"},
+    {"user_code": "u_ito", "role_code": "operator", "company_code": "MIDORI-MAIN"},
 ]
 
 inquiry_categories = [
@@ -190,6 +200,92 @@ for lic in licenses:
             "currency": "JPY", "status": "pending" if month == MONTHS[-1] else "paid",
         })
 
+# ---- CMS：FAQ（質問の言い換えは複数持てる）----
+FAQ_SEED = {
+    "ACME": [
+        ("cancellation", ["解約したいのですが手続きを教えてください", "解約方法を知りたい"],
+         "マイページにログイン後「契約管理」から「解約手続き」を選び、画面の案内に従って進めてください。完了後に確認メールが届きます。",
+         "published"),
+        ("billing", ["料金プランを変更したいです", "プランを上げたい"],
+         "マイページの「契約管理」から「プラン変更」を選べます。変更は次回の請求日から反映されます。", "published"),
+        ("billing", ["請求書を再発行してほしいです", "請求書をもう一度送ってほしい"],
+         "マイページの「請求履歴」から過去の請求書を PDF でダウンロードいただけます。", "published"),
+        ("billing", ["支払いが遅れた場合はどうなりますか"],
+         "お支払い期日から7日を超えると、サービスの一部機能が制限される場合があります。事情がある場合は事前にご相談ください。",
+         "published"),
+        ("usage", ["パスワードを忘れました", "ログインできません"],
+         "ログイン画面の「パスワードを忘れた場合」から再設定用のメールを送信できます。", "published"),
+        ("usage", ["利用できる時間帯を教えてください"],
+         "サービスは24時間ご利用いただけます。サポート窓口の受付は平日9時〜18時です。", "published"),
+        ("other", ["法人向けの請求書払いはできますか"],
+         "（作成中）請求書払いの条件を経理部に確認中です。", "draft"),
+    ],
+    "MIDORI": [
+        ("usage", ["診療時間を教えてください", "何時まで開いていますか"],
+         "平日は9時〜12時、14時〜18時、土曜日は9時〜12時です。日曜・祝日は休診です。", "published"),
+        ("usage", ["予約を変更したいです", "予約の日にちを変えたい"],
+         "前日の17時までにお電話いただくか、Web 予約のページから変更できます。", "published"),
+        ("usage", ["駐車場はありますか"], "建物の裏手に5台分の無料駐車場がございます。", "published"),
+        ("billing", ["クレジットカードは使えますか"],
+         "各種クレジットカード、交通系 IC、QR コード決済がご利用いただけます。", "published"),
+        ("other", ["オンライン診療は受けられますか"], "（作成中）オンライン診療の開始時期を確認中です。", "draft"),
+    ],
+}
+faqs = []
+for c in companies:
+    for i, (cat, questions, answer, status) in enumerate(FAQ_SEED[c["tenant_code"]], start=1):
+        faqs.append({
+            "company_code": c["company_code"], "category_code": cat, "questions": questions,
+            "answer_text": answer, "status": status, "source": "manual",
+            "updated_at": f"2026-0{4 + i % 5}-1{i % 9}T10:00:00",
+        })
+
+# AI が答えられなかった質問（timestamp が null のものは「本日」の分として投入される）
+UNANSWERED_SEED = {
+    "ACME": ["領収書の宛名を変更できますか", "海外からも電話できますか", "担当者を指名できますか",
+             "API の利用上限はありますか", "請求先を部署ごとに分けたい", "契約書の写しがほしい",
+             "年額払いにすると割引はありますか"],
+    "MIDORI": ["子どもの予防接種はしていますか", "紹介状は必要ですか", "車いすで入れますか",
+               "土曜日の午後は診てもらえますか"],
+}
+unanswered_questions = []
+for c in companies:
+    today_count = next(x["unanswered_today"] for x in live if x["company_code"] == c["company_code"])
+    texts = UNANSWERED_SEED[c["tenant_code"]]
+    for i, text in enumerate(texts[: today_count + 3]):
+        ts = None if i < today_count else f"2026-10-{20 + i:02d}T{10 + i}:15:00"
+        unanswered_questions.append({"company_code": c["company_code"], "question_text": text,
+                                     "timestamp": ts})
+
+response_settings = [
+    {"company_code": "ACME-TOKYO",
+     "greeting": "お電話ありがとうございます。株式会社ACME サポート窓口です。",
+     "business_hours_start": "09:00", "business_hours_end": "18:00", "business_days": [1, 2, 3, 4, 5],
+     "after_hours_message": "本日の受付は終了しました。平日9時から18時の間におかけ直しください。",
+     "escalation_keywords": ["解約", "訴える", "責任者", "オペレーター"], "max_ai_turns": 3},
+    {"company_code": "ACME-OSAKA",
+     "greeting": "お電話ありがとうございます。株式会社ACME 大阪支店です。",
+     "business_hours_start": "09:00", "business_hours_end": "17:30", "business_days": [1, 2, 3, 4, 5],
+     "after_hours_message": "本日の受付は終了しました。",
+     "escalation_keywords": ["解約", "オペレーター"], "max_ai_turns": 3},
+    {"company_code": "MIDORI-MAIN",
+     "greeting": "お電話ありがとうございます。みどりクリニックです。",
+     "business_hours_start": "09:00", "business_hours_end": "18:00", "business_days": [1, 2, 3, 4, 5, 6],
+     "after_hours_message": "本日の診療受付は終了しました。急病の方は救急相談窓口におかけください。",
+     "escalation_keywords": ["痛い", "苦しい", "救急", "受付の方"], "max_ai_turns": 2},
+]
+
+# 導入支援クレジット（テスト通話などの従量料金と相殺できる）
+credits = [
+    {"company_code": c["company_code"], "amount": 50000, "reason": "導入支援クレジット",
+     "granted_at": c["created_at"][:10], "expires_at": None}
+    for c in companies
+]
+
+for lic in licenses:
+    lic.setdefault("billing_model", "subscription")
+    lic.setdefault("per_call_fee", None)
+
 data = {
     "note": "デモ用の架空データです。scripts/generate_fixture.py で生成しています。",
     "months": MONTHS,
@@ -199,6 +295,8 @@ data = {
     "call_volume": call_volume, "live": live,
     "support_cases": support_cases, "case_handovers": case_handovers,
     "system_logs": system_logs, "cost_usage_daily": cost_usage_daily, "invoices": invoices,
+    "faqs": faqs, "unanswered_questions": unanswered_questions,
+    "response_settings": response_settings, "credits": credits,
 }
 
 OUT.parent.mkdir(parents=True, exist_ok=True)

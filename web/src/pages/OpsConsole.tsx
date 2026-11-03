@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import type { OpsCompany } from '../api/types';
 import { useApi } from '../auth/session';
 import { formatMoney } from '../lib/format';
@@ -36,13 +36,56 @@ function CapacityRing({ ratio, size = 92, stroke = 8 }: { ratio: number; size?: 
   );
 }
 
-function CompanyCard({ company, selected, onSelect }: { company: OpsCompany; selected: boolean; onSelect: () => void }) {
+function GrantCredit({ company, onGranted }: { company: OpsCompany; onGranted: () => void }) {
+  const api = useApi();
+  const [amount, setAmount] = useState(30000);
+  const [reason, setReason] = useState('手動テスト期間の追加クレジット');
+  const [expires, setExpires] = useState('');
+  const [message, setMessage] = useState<string | null>(null);
+
+  async function submit(e: FormEvent) {
+    e.preventDefault();
+    try {
+      const r = await api.opsGrantCredit(company.company_code, { amount, reason, expires_at: expires || null });
+      setMessage(`付与しました（残高 ${formatMoney(r.credit_balance)}）`);
+      onGranted();
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : '付与できませんでした');
+    }
+  }
+
+  const input = 'rounded-md border border-[#2A3341] bg-[#0F1318] px-2 py-1.5 text-sm text-[#E8EAED]';
+  return (
+    <form onSubmit={submit} className="mt-4 pt-4 border-t border-[#2A3341] space-y-2" onClick={(e) => e.stopPropagation()}>
+      <div className="text-xs text-[#8B95A5]">クレジットを付与</div>
+      <div className="flex flex-wrap gap-2">
+        <input type="number" min={1} value={amount} onChange={(e) => setAmount(Number(e.target.value))} className={`${input} w-28`} aria-label="金額" />
+        <input value={reason} onChange={(e) => setReason(e.target.value)} maxLength={200} className={`${input} flex-1 min-w-[160px]`} aria-label="理由" />
+        <input type="date" value={expires} onChange={(e) => setExpires(e.target.value)} className={input} aria-label="有効期限" />
+        <button className="rounded-md bg-[#3DD68C]/15 text-[#3DD68C] px-3 py-1.5 text-sm hover:bg-[#3DD68C]/25">付与</button>
+      </div>
+      {message && <p className="text-xs text-[#8B95A5]">{message}</p>}
+    </form>
+  );
+}
+
+function CompanyCard({
+  company,
+  selected,
+  onSelect,
+  onChanged,
+}: {
+  company: OpsCompany;
+  selected: boolean;
+  onSelect: () => void;
+  onChanged: () => void;
+}) {
   const ratio = usageRatio(company);
   const status = statusOf(ratio);
   return (
-    <button
+    <div
       onClick={onSelect}
-      className={`text-left rounded-xl border transition-colors p-5 w-full ${
+      className={`text-left rounded-xl border transition-colors p-5 w-full cursor-pointer ${
         selected ? 'border-[#3DD68C]/60 bg-[#1B212B]' : 'border-[#2A3341] bg-[#161B23] hover:border-[#3A4556]'
       }`}
     >
@@ -51,7 +94,8 @@ function CompanyCard({ company, selected, onSelect }: { company: OpsCompany; sel
           <div className="font-mono text-xs text-[#8B95A5] tracking-wide">{company.company_code}</div>
           <div className="text-[#E8EAED] font-semibold text-base mt-0.5">{company.company_name}</div>
           <div className="text-xs text-[#8B95A5] mt-1">
-            {company.plan_label ?? '―'} ・ {company.country_code}
+            {company.plan_label ?? '―'} ・ {company.billing_model === 'metered' ? `従量課金（${formatMoney(company.per_call_fee)}/通話）` : '月額定額'} ・{' '}
+            {company.country_code}
           </div>
         </div>
         <span
@@ -84,9 +128,14 @@ function CompanyCard({ company, selected, onSelect }: { company: OpsCompany; sel
             <dt className="text-[#8B95A5]">本日の未回答質問</dt>
             <dd className="font-mono text-[#E8EAED]">{company.unanswered_today}件</dd>
           </div>
+          <div className="flex justify-between gap-2">
+            <dt className="text-[#8B95A5]">クレジット残高</dt>
+            <dd className="font-mono text-[#3DD68C]">{formatMoney(company.credit_balance)}</dd>
+          </div>
         </dl>
       </div>
-    </button>
+      {selected && <GrantCredit company={company} onGranted={onChanged} />}
+    </div>
   );
 }
 
@@ -101,7 +150,8 @@ export default function OpsConsole() {
   }, [tenants.data, tenant]);
 
   const ready = tenant ? Promise.resolve(tenant) : new Promise<string>(() => undefined);
-  const companies = useAsync(() => ready.then((t) => api.opsCompanies(t)), [api, tenant]);
+  const [reload, setReload] = useState(0);
+  const companies = useAsync(() => ready.then((t) => api.opsCompanies(t)), [api, tenant, reload]);
   const users = useAsync(() => ready.then((t) => api.opsUsers(t)), [api, tenant]);
 
   const list = companies.data ?? [];
@@ -183,7 +233,7 @@ export default function OpsConsole() {
 
         <div>
           <h2 className="font-display font-semibold text-sm text-[#8B95A5] tracking-wide mb-3">契約ステータス</h2>
-          {companies.loading ? (
+          {companies.loading && !companies.data ? (
             <div className="text-sm text-[#8B95A5]">読み込み中…</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -195,6 +245,7 @@ export default function OpsConsole() {
                     company={c}
                     selected={selected === c.company_code}
                     onSelect={() => setSelected(c.company_code)}
+                    onChanged={() => setReload((n) => n + 1)}
                   />
                 ))}
             </div>

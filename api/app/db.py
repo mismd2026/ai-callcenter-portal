@@ -88,6 +88,9 @@ licenses = Table(
     Column("currency", Text, nullable=False),
     Column("price_amount", Float, nullable=False),
     Column("concurrent_call_limit", Integer, nullable=False),
+    # subscription: 月額定額（既定） / metered: 従量課金オプション（通話ごとに per_call_fee を加算）
+    Column("billing_model", Text, nullable=False, server_default="subscription"),
+    Column("per_call_fee", Float),
     Column("valid_from", Text, nullable=False),
     Column("valid_until", Text),
     Column("status", Text, server_default="active"),
@@ -134,6 +137,7 @@ calls = Table(
     Column("ended_at", Text),
     Column("escalated", Integer, server_default="0"),
     Column("primary_category_code", Text, ForeignKey("inquiry_categories.category_code")),
+    Column("channel", Text, server_default="ai"),  # ai / manual（人が受けて入力した通話）
 )
 
 escalations = Table(
@@ -149,9 +153,14 @@ unanswered_questions = Table(
     "unanswered_questions",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("call_id", Text, ForeignKey("calls.call_id"), nullable=False),
+    Column("company_code", Text, ForeignKey("companies.company_code"), nullable=False, index=True),
+    Column("call_id", Text, ForeignKey("calls.call_id")),
     Column("question_text", Text, nullable=False),
     Column("timestamp", Text, nullable=False),
+    Column("status", Text, server_default="open"),  # open / promoted / dismissed
+    Column("reviewed_by", Text),
+    Column("reviewed_at", Text),
+    Column("promoted_faq_id", Integer),
 )
 
 cost_usage_daily = Table(
@@ -213,6 +222,81 @@ system_logs = Table(
     Column("occurred_at", Text, nullable=False),
     Column("source", Text),
     Column("message", Text, nullable=False),
+)
+
+
+# ---- CMS（顧客の契約管理者が編集する） ----
+
+faq_entries = Table(
+    "faq_entries",
+    metadata,
+    Column("faq_id", Integer, primary_key=True, autoincrement=True),
+    Column("company_code", Text, ForeignKey("companies.company_code"), nullable=False, index=True),
+    Column("category_code", Text, ForeignKey("inquiry_categories.category_code"), nullable=False),
+    Column("answer_text", Text, nullable=False),
+    Column("status", Text, nullable=False, server_default="draft"),  # draft / published
+    Column("source", Text, server_default="manual"),  # manual / csv / unanswered
+    Column("updated_at", Text, nullable=False),
+    Column("updated_by", Text),
+)
+
+# 1つの回答に対して、質問の言い換えを複数持てる（phase2-core の faq_questions と同じ考え方）
+faq_questions = Table(
+    "faq_questions",
+    metadata,
+    Column("question_id", Integer, primary_key=True, autoincrement=True),
+    Column(
+        "faq_id",
+        Integer,
+        ForeignKey("faq_entries.faq_id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    ),
+    Column("question_text", Text, nullable=False),
+)
+
+response_settings = Table(
+    "response_settings",
+    metadata,
+    Column("company_code", Text, ForeignKey("companies.company_code"), primary_key=True),
+    Column("greeting", Text, nullable=False),
+    Column("business_hours_start", Text, nullable=False),  # HH:MM
+    Column("business_hours_end", Text, nullable=False),
+    Column("business_days", Text, nullable=False),  # JSON 配列（1=月 … 7=日）
+    Column("after_hours_message", Text, nullable=False),
+    Column("escalation_keywords", Text, nullable=False),  # JSON 配列
+    Column("max_ai_turns", Integer, nullable=False),
+    Column("updated_at", Text),
+    Column("updated_by", Text),
+)
+
+# 人が電話を受けて入力した通話の内容（calls の channel='manual' と 1対1）
+manual_call_records = Table(
+    "manual_call_records",
+    metadata,
+    Column("call_id", Text, ForeignKey("calls.call_id"), primary_key=True),
+    Column("company_code", Text, ForeignKey("companies.company_code"), nullable=False, index=True),
+    Column("caller_question", Text, nullable=False),
+    Column("answer_given", Text, nullable=False),
+    Column("faq_id", Integer, ForeignKey("faq_entries.faq_id", ondelete="SET NULL")),
+    Column("outcome", Text, nullable=False),  # resolved / escalated / callback
+    Column("duration_sec", Integer, nullable=False),
+    Column("note", Text),
+    Column("entered_by", Text, nullable=False),
+    Column("entered_at", Text, nullable=False),
+)
+
+# 導入支援などのクレジット（従量料金と相殺する）
+credits = Table(
+    "credits",
+    metadata,
+    Column("credit_id", Integer, primary_key=True, autoincrement=True),
+    Column("company_code", Text, ForeignKey("companies.company_code"), nullable=False, index=True),
+    Column("amount", Float, nullable=False),
+    Column("reason", Text, nullable=False),
+    Column("granted_at", Text, nullable=False),  # YYYY-MM-DD
+    Column("expires_at", Text),  # YYYY-MM-DD（なしなら無期限）
+    Column("granted_by", Text),
 )
 
 

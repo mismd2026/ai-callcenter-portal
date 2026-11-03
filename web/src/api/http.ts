@@ -19,6 +19,10 @@ export function createHttpApi(getToken: () => Promise<string>): PortalApi {
       try {
         const body = await res.json();
         if (typeof body.detail === 'string') message = body.detail;
+        else if (Array.isArray(body.detail) && body.detail[0]?.msg) {
+          // 入力チェックのエラー（FastAPI / Pydantic）
+          message = '入力内容を確認してください：' + String(body.detail[0].msg).replace(/^Value error, /, '');
+        }
       } catch {
         // 本文が JSON でない場合は既定のメッセージを使う
       }
@@ -28,6 +32,10 @@ export function createHttpApi(getToken: () => Promise<string>): PortalApi {
   }
 
   const q = (period: string) => `period=${encodeURIComponent(period)}`;
+  const json = (method: string, body?: unknown): RequestInit => ({
+    method,
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
 
   return {
     me: () => request('/me'),
@@ -42,6 +50,25 @@ export function createHttpApi(getToken: () => Promise<string>): PortalApi {
     requestCancellation: async (reason) => {
       await request('/company/cancellation', { method: 'POST', body: JSON.stringify({ reason }) });
     },
+    categories: () => request('/company/categories'),
+    faqs: (status) => request(`/company/faqs${status ? `?status=${status}` : ''}`),
+    createFaq: (input) => request('/company/faqs', json('POST', input)),
+    updateFaq: (id, input) => request(`/company/faqs/${id}`, json('PUT', input)),
+    setFaqStatus: (id, status) => request(`/company/faqs/${id}/status`, json('POST', { status })),
+    deleteFaq: (id) => request(`/company/faqs/${id}`, json('DELETE')),
+    importFaqs: (csv, dryRun) => request('/company/faqs/import', json('POST', { csv, dry_run: dryRun })),
+    unanswered: (status) => request(`/company/unanswered?status=${status}`),
+    promoteUnanswered: (id, input) => request(`/company/unanswered/${id}/promote`, json('POST', input)),
+    dismissUnanswered: async (id) => {
+      await request(`/company/unanswered/${id}/dismiss`, json('POST'));
+    },
+    settings: () => request('/company/settings'),
+    saveSettings: (input) => request('/company/settings', json('PUT', input)),
+    searchFaqs: (text) => request(`/company/faqs/search?q=${encodeURIComponent(text)}`),
+    createManualCall: (input) => request('/company/calls/manual', json('POST', input)),
+    manualCalls: () => request('/company/calls/manual'),
+    opsGrantCredit: (code, input) =>
+      request(`/ops/companies/${encodeURIComponent(code)}/credits`, json('POST', input)),
     opsTenants: () => request('/ops/tenants'),
     opsCompanies: (t) => request(`/ops/tenants/${encodeURIComponent(t)}/companies`),
     opsUsers: (t) => request(`/ops/tenants/${encodeURIComponent(t)}/users`),

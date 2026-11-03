@@ -1,10 +1,11 @@
 import { IS_DEMO, SessionProvider, useSession } from './auth/session';
-import CustomerDashboard from './pages/CustomerDashboard';
+import CustomerShell from './pages/CustomerShell';
 import Login from './pages/Login';
 import OpsConsole from './pages/OpsConsole';
 
 const ROLE_LABEL: Record<string, string> = {
   company_admin: '契約管理者',
+  operator: 'オペレーター',
   viewer: '閲覧者',
   ops_admin: '運用管理者',
 };
@@ -39,7 +40,7 @@ function Routes() {
     <div className="h-full flex flex-col">
       <TopBar />
       <div className="flex-1 min-h-0 overflow-y-auto">
-        {session.me.role === 'ops_admin' ? <OpsConsole /> : <CustomerDashboard />}
+        {session.me.role === 'ops_admin' ? <OpsConsole /> : <CustomerShell />}
       </div>
     </div>
   );

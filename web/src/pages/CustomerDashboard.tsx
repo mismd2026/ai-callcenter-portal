@@ -212,7 +212,6 @@ export default function CustomerDashboard() {
   const [logType, setLogType] = useState<CustomerLogType>('operator');
   const [period, setPeriod] = useState<string>('');
 
-  const company = useAsync(() => api.company(), [api]);
   const periods = useAsync(() => api.periods(), [api]);
   useEffect(() => {
     if (!period && periods.data?.length) setPeriod(periods.data[periods.data.length - 1]);
@@ -234,29 +233,8 @@ export default function CustomerDashboard() {
 
   return (
     <div className="h-full flex flex-col">
-      <header className="bg-white border-b border-[#E4E7EC] px-4 sm:px-8 pt-4 shrink-0">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <div className="font-mono text-[11px] text-[#667085] tracking-wide">{company.data?.company_code}</div>
-            <h1 className="font-display font-bold text-lg mt-0.5">
-              {company.data?.company_name ?? (company.error ? company.error.message : '読み込み中…')}
-            </h1>
-          </div>
-          <div className="flex items-center gap-6">
-            <div className="text-right">
-              <div className="text-[11px] text-[#667085]">契約開始日</div>
-              <div className="font-mono text-sm">{company.data?.created_at?.slice(0, 10) ?? '―'}</div>
-            </div>
-            <div className="text-right">
-              <div className="text-[11px] text-[#667085]">プラン</div>
-              <div className="text-sm font-medium">{company.data?.plan_label ?? '―'}</div>
-            </div>
-            <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-[#0F9B8E]/10 text-[#0F9B8E]">
-              {company.data?.status === 'active' ? '本稼働中' : (company.data?.status ?? '―')}
-            </span>
-          </div>
-        </div>
-        <div className="flex gap-1 mt-4 overflow-x-auto">
+      <div className="bg-white border-b border-[#E4E7EC] px-4 sm:px-8 shrink-0">
+        <div className="flex gap-1 overflow-x-auto">
           {SECTION_TABS.map((tab) => (
             <button
               key={tab.key}
@@ -271,7 +249,7 @@ export default function CustomerDashboard() {
             </button>
           ))}
         </div>
-      </header>
+      </div>
 
       <div className="flex flex-col md:flex-row flex-1 min-h-0">
         <PeriodPane periods={periods.data ?? []} selected={period} onSelect={setPeriod} />
@@ -446,10 +424,23 @@ export default function CustomerDashboard() {
                             <span className="font-mono">{formatMoney(b.amount, data.currency)}</span>
                           </div>
                         ))}
+                        <div className="border-t border-[#E4E7EC] pt-3 flex justify-between text-sm">
+                          <span className="text-[#475467]">小計</span>
+                          <span className="font-mono">{formatMoney(data.subtotal, data.currency)}</span>
+                        </div>
+                        {data.credit_applied > 0 && (
+                          <div className="flex justify-between text-sm">
+                            <span className="text-[#0F9B8E]">導入支援クレジット</span>
+                            <span className="font-mono text-[#0F9B8E]">−{formatMoney(data.credit_applied, data.currency)}</span>
+                          </div>
+                        )}
                         <div className="border-t border-[#E4E7EC] pt-3 flex justify-between font-medium">
-                          <span>合計</span>
+                          <span>ご請求額</span>
                           <span className="font-mono text-[#0F9B8E] text-base">{formatMoney(data.total, data.currency)}</span>
                         </div>
+                        <p className="text-xs text-[#98A2B3]">
+                          クレジット残高 {formatMoney(data.credit_balance, data.currency)}（基本料金以外の従量分と相殺されます）
+                        </p>
                       </div>
                     )}
                   </Loadable>
@@ -458,8 +449,8 @@ export default function CustomerDashboard() {
                 <Section title="請求情報">
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-[#475467]">請求額</span>
-                      <span className="font-mono">{formatMoney(billing.data?.invoice?.total_amount)}</span>
+                      <span className="text-[#475467]">ご請求額</span>
+                      <span className="font-mono">{formatMoney(billing.data?.total)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#475467]">発行日</span>
