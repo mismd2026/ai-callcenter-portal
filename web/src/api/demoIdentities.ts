@@ -17,7 +17,7 @@ export const DEMO_IDENTITIES: DemoIdentity[] = [
   },
   {
     label: '森 さくら（契約管理者）',
-    description: 'みどりクリニック 本院。小規模プランの例',
+    description: 'みどりクリニック 本院。小規模な契約の例',
     role: 'company_admin',
     company_code: 'MIDORI-MAIN',
   },

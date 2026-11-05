@@ -6,7 +6,7 @@ AI コールセンターの本体はインターネットに公開せず、**こ
 
 **デモ（ログイン不要・架空データ）**：https://mismd2026.github.io/ai-callcenter-portal/
 
-**紹介サイト（処理能力・学習・料金の試算）**：https://mismd2026.github.io/ai-callcenter-site/ ／ リポジトリ：[ai-callcenter-site](https://github.com/mismd2026/ai-callcenter-site)
+**紹介サイト（処理能力・学習の試算と価格の相場）**：https://mismd2026.github.io/ai-callcenter-site/ ／ リポジトリ：[ai-callcenter-site](https://github.com/mismd2026/ai-callcenter-site)
 
 > English: Customer portal and operator console for a self-hosted AI call center. React + TypeScript frontend, FastAPI backend, Firebase Authentication with custom claims for tenant isolation, Cloud Run + private-IP Cloud SQL provisioned with Terraform. The AI core stays off the internet.
 
@@ -36,8 +36,9 @@ flowchart LR
 ```
 
 - 入力した通話は AI の通話と区別せずに利用状況に数えます
-- 料金は契約の課金方式で決まります。基本は**月額定額（サブスクリプション）**で、通話ごとの料金はかかりません。**従量課金オプション**を選んだ契約だけ、契約ごとに決めた単価で通話処理料を加算します
-- 従量分（基本ライセンス料以外）は**導入支援クレジット**と相殺します。クレジットは古い月から、期限の近いものから使い、運用管理者が追加で付与できます
+- 課金方式は契約ごとに設定できます（**月額定額**か、通話ごとに単価を加算する**従量課金**か）。従量課金の契約では、入力した通話1件ごとに通話処理料が加算されます
+- 基本料金以外の利用料は、運用管理者が付与した**クレジット**と相殺します。クレジットは古い月から、期限の近いものから使います
+- デモのプラン名・金額・同時通話数はすべて架空の値で、実際の料金体系を表すものではありません
 - 本稼働前の手動テストで FAQ の抜けを洗い出し、そのまま FAQ に育てていく流れを想定しています
 
 ## 構成

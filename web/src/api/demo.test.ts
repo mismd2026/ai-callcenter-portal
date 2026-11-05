@@ -25,8 +25,8 @@ describe('デモ API：ダッシュボード（API と同じ集計）', () => {
 
   it('請求はクレジットを差し引いた額になる', async () => {
     const b = await fresh('company_admin').billing('2026-05');
-    expect(b.breakdown[0]).toEqual({ label: '基本ライセンス料', amount: 1000000 });
-    expect(b.credit_applied).toBe(50000); // 導入支援クレジットを初月の従量分と相殺
+    expect(b.breakdown[0]).toEqual({ label: '基本ライセンス料', amount: 500000 });
+    expect(b.credit_applied).toBe(50000); // クレジットを初月の従量分と相殺
     expect(b.total).toBe(b.subtotal - b.credit_applied);
   });
 });
@@ -100,7 +100,7 @@ describe('デモ API：CMS と通話入力', () => {
     expect((await admin.unanswered('promoted'))[0].promoted_faq_id).toBe(faq.faq_id);
   });
 
-  it('入力した通話は利用状況に数え、従量課金オプションの契約だけ通話処理料がかかる', async () => {
+  it('入力した通話は利用状況に数え、従量課金の契約だけ通話処理料がかかる', async () => {
     const store = createDemoStore();
     const now = new Date();
     const period = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -123,7 +123,7 @@ describe('デモ API：CMS と通話入力', () => {
     expect((await admin.monthlyCalls()).find((m) => m.period === period)?.calls).toBe(2);
     expect((await admin.billing(period)).breakdown.find((b) => b.label === '通話処理料')).toBeUndefined();
 
-    // 大阪支店：従量課金オプション
+    // 大阪支店：従量課金
     const osaka = { label: '', description: '', company_code: 'ACME-OSAKA' };
     const osakaOperator = createDemoApi({ ...osaka, role: 'operator' }, fixture, store);
     await osakaOperator.createManualCall(input);
@@ -134,7 +134,7 @@ describe('デモ API：CMS と通話入力', () => {
     const bill = await osakaAdmin.billing(period);
     expect(bill.breakdown.find((b) => b.label === '通話処理料')?.amount).toBe(company.per_call_fee! * 2);
     expect(bill.total).toBe(bill.subtotal - bill.credit_applied);
-    // 初回の導入支援クレジットは使い切っているので、運用管理者が追加すると相殺される
+    // 初回のクレジットは使い切っているので、運用管理者が追加すると相殺される
     await fresh('ops_admin', store).opsGrantCredit('ACME-OSAKA', { amount: 30000, reason: '追加', expires_at: null });
     expect((await osakaAdmin.billing(period)).credit_applied).toBe(company.per_call_fee! * 2);
   });

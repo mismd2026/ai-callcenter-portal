@@ -22,7 +22,7 @@ export interface Company {
   per_call_fee: number | null;
 }
 
-/** subscription: 月額定額（既定） / metered: 従量課金オプション（通話ごとに per_call_fee） */
+/** subscription: 月額定額（既定） / metered: 従量課金（通話ごとに per_call_fee） */
 export type BillingModel = 'subscription' | 'metered';
 
 export interface OnboardingStep {
@@ -70,7 +70,7 @@ export interface LogEntry {
 export interface Billing {
   breakdown: { label: string; amount: number }[];
   subtotal: number;
-  credit_applied: number; // 導入支援クレジットで相殺した額
+  credit_applied: number; // クレジットで相殺した額
   credit_balance: number; // その月の終わり時点の残高
   total: number; // subtotal - credit_applied
   currency: string;

@@ -31,21 +31,22 @@ companies = [
      "country_code": "JP", "created_at": "2026-05-01T00:00:00", "status": "active"},
 ]
 
+# プラン名・金額・同時通話数はすべてデモ用の架空の値で、実際の料金体系を表すものではない
 plan_catalog = [
-    {"plan_tier": "small", "plan_label": "最小プラン", "default_concurrent_limit": 10, "tier_group": "small"},
-    {"plan_tier": "mid_take", "plan_label": "中間プラン（竹）", "default_concurrent_limit": 100, "tier_group": "mid"},
+    {"plan_tier": "demo_a", "plan_label": "デモプランA", "default_concurrent_limit": 10, "tier_group": "demo"},
+    {"plan_tier": "demo_b", "plan_label": "デモプランB", "default_concurrent_limit": 50, "tier_group": "demo"},
 ]
 
-# billing_model: subscription（月額定額・既定）/ metered（従量課金オプション：通話ごとに per_call_fee）
+# billing_model: subscription（月額定額・既定）/ metered（従量課金：通話ごとに per_call_fee）
 licenses = [
-    {"company_code": "ACME-TOKYO", "plan_tier": "mid_take", "country_code": "JP", "currency": "JPY",
-     "price_amount": 1000000, "concurrent_call_limit": 100, "valid_from": "2026-01-10", "status": "active"},
-    # 大阪支店だけ、通話ごとに課金する従量課金オプションを選んでいる例
-    {"company_code": "ACME-OSAKA", "plan_tier": "small", "country_code": "JP", "currency": "JPY",
-     "price_amount": 120000, "concurrent_call_limit": 10, "valid_from": "2026-04-01", "status": "active",
-     "billing_model": "metered", "per_call_fee": 30},
-    {"company_code": "MIDORI-MAIN", "plan_tier": "small", "country_code": "JP", "currency": "JPY",
-     "price_amount": 120000, "concurrent_call_limit": 10, "valid_from": "2026-05-01", "status": "active"},
+    {"company_code": "ACME-TOKYO", "plan_tier": "demo_b", "country_code": "JP", "currency": "JPY",
+     "price_amount": 500000, "concurrent_call_limit": 50, "valid_from": "2026-01-10", "status": "active"},
+    # 大阪支店だけ、通話ごとに課金する従量課金を選んでいる例
+    {"company_code": "ACME-OSAKA", "plan_tier": "demo_a", "country_code": "JP", "currency": "JPY",
+     "price_amount": 100000, "concurrent_call_limit": 10, "valid_from": "2026-04-01", "status": "active",
+     "billing_model": "metered", "per_call_fee": 50},
+    {"company_code": "MIDORI-MAIN", "plan_tier": "demo_a", "country_code": "JP", "currency": "JPY",
+     "price_amount": 100000, "concurrent_call_limit": 10, "valid_from": "2026-05-01", "status": "active"},
 ]
 
 roles = [
@@ -118,7 +119,7 @@ for code, base in BASE_VOLUME.items():
 
 # 「今」の状況（API は投入時点の日時で、通話中・本日のエスカレーション・本日の未回答を作る）
 live = [
-    {"company_code": "ACME-TOKYO", "active_calls": 74, "escalations_today": 12, "unanswered_today": 5},
+    {"company_code": "ACME-TOKYO", "active_calls": 37, "escalations_today": 12, "unanswered_today": 5},
     {"company_code": "ACME-OSAKA", "active_calls": 9, "escalations_today": 3, "unanswered_today": 2},
     {"company_code": "MIDORI-MAIN", "active_calls": 4, "escalations_today": 1, "unanswered_today": 0},
 ]
@@ -177,7 +178,8 @@ for c in companies:
                     "message": rng.choice(messages),
                 })
 
-COST_TYPES = {"通話回線料": (0.08, "minutes"), "GPU利用料": (0.12, "hours"), "有人対応オプション": (0.05, "calls")}
+# 基本料金以外の利用料（デモ用の架空の内訳）
+COST_TYPES = {"通話料": (0.08, "minutes"), "追加利用料": (0.12, "calls")}
 cost_usage_daily, invoices = [], []
 for lic in licenses:
     code = lic["company_code"]
@@ -275,9 +277,9 @@ response_settings = [
      "escalation_keywords": ["痛い", "苦しい", "救急", "受付の方"], "max_ai_turns": 2},
 ]
 
-# 導入支援クレジット（テスト通話などの従量料金と相殺できる）
+# クレジット（テスト通話などの従量料金と相殺できる）
 credits = [
-    {"company_code": c["company_code"], "amount": 50000, "reason": "導入支援クレジット",
+    {"company_code": c["company_code"], "amount": 50000, "reason": "初期クレジット",
      "granted_at": c["created_at"][:10], "expires_at": None}
     for c in companies
 ]

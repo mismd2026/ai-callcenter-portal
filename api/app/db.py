@@ -88,7 +88,7 @@ licenses = Table(
     Column("currency", Text, nullable=False),
     Column("price_amount", Float, nullable=False),
     Column("concurrent_call_limit", Integer, nullable=False),
-    # subscription: 月額定額（既定） / metered: 従量課金オプション（通話ごとに per_call_fee を加算）
+    # subscription: 月額定額（既定） / metered: 従量課金（通話ごとに per_call_fee を加算）
     Column("billing_model", Text, nullable=False, server_default="subscription"),
     Column("per_call_fee", Float),
     Column("valid_from", Text, nullable=False),
@@ -286,7 +286,7 @@ manual_call_records = Table(
     Column("entered_at", Text, nullable=False),
 )
 
-# 導入支援などのクレジット（従量料金と相殺する）
+# クレジット（従量料金と相殺する）
 credits = Table(
     "credits",
     metadata,

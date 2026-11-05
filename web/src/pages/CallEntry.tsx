@@ -79,7 +79,7 @@ export default function CallEntry() {
             <p className="text-sm text-[#667085] mt-1">
               人が受けた電話の内容を記録します。導入前の手動テストにも使えます。記録した通話は利用状況に含まれます。
               {company.data?.billing_model === 'metered' && company.data.per_call_fee
-                ? `従量課金オプションのため、1通話あたり ${formatMoney(company.data.per_call_fee)} の通話処理料がかかり、導入支援クレジットと相殺されます。`
+                ? `従量課金のため、1通話あたり ${formatMoney(company.data.per_call_fee)} の通話処理料がかかり、クレジットと相殺されます。`
                 : '月額定額のプランのため、通話ごとの料金はかかりません。'}
             </p>
           </div>

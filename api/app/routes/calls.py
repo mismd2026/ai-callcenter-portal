@@ -4,8 +4,8 @@ AI に任せきりにしない運用や、本稼働前の手動テストで使�
 入力した通話は AI の通話と区別せずに利用状況に数える。
 料金は契約の課金方式による：
   - subscription（月額定額・既定）：通話ごとの料金はかからない
-  - metered（従量課金オプション）：契約の per_call_fee を「通話処理料」として加算し、
-    導入支援クレジットと相殺できる（routes/dashboard.py の請求計算）
+  - metered（従量課金）：契約の per_call_fee を「通話処理料」として加算し、
+    クレジットと相殺できる（routes/dashboard.py の請求計算）
 """
 
 import uuid
