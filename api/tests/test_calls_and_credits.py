@@ -125,7 +125,7 @@ def test_subscription_plan_has_no_per_call_fee(client):
 
 
 def test_metered_plan_charges_per_call_and_is_offset_by_credit(client):
-    """従量課金オプションの契約では、通話ごとの料金を加算し、クレジットと相殺する。"""
+    """従量課金の契約では、通話ごとの料金を加算し、クレジットと相殺する。"""
     period = this_period()
     company = client.get("/api/company", headers=OSAKA_ADMIN).json()
     assert company["billing_model"] == "metered"

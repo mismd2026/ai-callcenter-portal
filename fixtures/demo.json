@@ -48,26 +48,26 @@
  ],
  "plan_catalog": [
   {
-   "plan_tier": "small",
-   "plan_label": "最小プラン",
+   "plan_tier": "demo_a",
+   "plan_label": "デモプランA",
    "default_concurrent_limit": 10,
-   "tier_group": "small"
+   "tier_group": "demo"
   },
   {
-   "plan_tier": "mid_take",
-   "plan_label": "中間プラン（竹）",
-   "default_concurrent_limit": 100,
-   "tier_group": "mid"
+   "plan_tier": "demo_b",
+   "plan_label": "デモプランB",
+   "default_concurrent_limit": 50,
+   "tier_group": "demo"
   }
  ],
  "licenses": [
   {
    "company_code": "ACME-TOKYO",
-   "plan_tier": "mid_take",
+   "plan_tier": "demo_b",
    "country_code": "JP",
    "currency": "JPY",
-   "price_amount": 1000000,
-   "concurrent_call_limit": 100,
+   "price_amount": 500000,
+   "concurrent_call_limit": 50,
    "valid_from": "2026-01-10",
    "status": "active",
    "billing_model": "subscription",
@@ -75,22 +75,22 @@
   },
   {
    "company_code": "ACME-OSAKA",
-   "plan_tier": "small",
+   "plan_tier": "demo_a",
    "country_code": "JP",
    "currency": "JPY",
-   "price_amount": 120000,
+   "price_amount": 100000,
    "concurrent_call_limit": 10,
    "valid_from": "2026-04-01",
    "status": "active",
    "billing_model": "metered",
-   "per_call_fee": 30
+   "per_call_fee": 50
   },
   {
    "company_code": "MIDORI-MAIN",
-   "plan_tier": "small",
+   "plan_tier": "demo_a",
    "country_code": "JP",
    "currency": "JPY",
-   "price_amount": 120000,
+   "price_amount": 100000,
    "concurrent_call_limit": 10,
    "valid_from": "2026-05-01",
    "status": "active",
@@ -877,7 +877,7 @@
  "live": [
   {
    "company_code": "ACME-TOKYO",
-   "active_calls": 74,
+   "active_calls": 37,
    "escalations_today": 12,
    "unanswered_today": 5
   },
@@ -2128,408 +2128,272 @@
   {
    "company_code": "ACME-TOKYO",
    "usage_date": "2026-05-28",
-   "cost_type": "通話回線料",
-   "amount": 98201,
+   "cost_type": "通話料",
+   "amount": 49100,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "ACME-TOKYO",
    "usage_date": "2026-05-28",
-   "cost_type": "GPU利用料",
-   "amount": 126471,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "ACME-TOKYO",
-   "usage_date": "2026-05-28",
-   "cost_type": "有人対応オプション",
-   "amount": 53118,
+   "cost_type": "追加利用料",
+   "amount": 63236,
    "currency": "JPY",
    "unit": "calls"
   },
   {
    "company_code": "ACME-TOKYO",
    "usage_date": "2026-06-28",
-   "cost_type": "通話回線料",
-   "amount": 91579,
+   "cost_type": "通話料",
+   "amount": 42494,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "ACME-TOKYO",
    "usage_date": "2026-06-28",
-   "cost_type": "GPU利用料",
-   "amount": 143152,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "ACME-TOKYO",
-   "usage_date": "2026-06-28",
-   "cost_type": "有人対応オプション",
-   "amount": 42746,
+   "cost_type": "追加利用料",
+   "amount": 68684,
    "currency": "JPY",
    "unit": "calls"
   },
   {
    "company_code": "ACME-TOKYO",
    "usage_date": "2026-07-28",
-   "cost_type": "通話回線料",
-   "amount": 76169,
+   "cost_type": "通話料",
+   "amount": 47717,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "ACME-TOKYO",
    "usage_date": "2026-07-28",
-   "cost_type": "GPU利用料",
-   "amount": 119066,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "ACME-TOKYO",
-   "usage_date": "2026-07-28",
-   "cost_type": "有人対応オプション",
-   "amount": 42199,
+   "cost_type": "追加利用料",
+   "amount": 51295,
    "currency": "JPY",
    "unit": "calls"
   },
   {
    "company_code": "ACME-TOKYO",
    "usage_date": "2026-08-28",
-   "cost_type": "通話回線料",
-   "amount": 71642,
+   "cost_type": "通話料",
+   "amount": 38084,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "ACME-TOKYO",
    "usage_date": "2026-08-28",
-   "cost_type": "GPU利用料",
-   "amount": 114964,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "ACME-TOKYO",
-   "usage_date": "2026-08-28",
-   "cost_type": "有人対応オプション",
-   "amount": 55786,
+   "cost_type": "追加利用料",
+   "amount": 59533,
    "currency": "JPY",
    "unit": "calls"
   },
   {
    "company_code": "ACME-TOKYO",
    "usage_date": "2026-09-28",
-   "cost_type": "通話回線料",
-   "amount": 73311,
+   "cost_type": "通話料",
+   "amount": 33759,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "ACME-TOKYO",
    "usage_date": "2026-09-28",
-   "cost_type": "GPU利用料",
-   "amount": 155512,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "ACME-TOKYO",
-   "usage_date": "2026-09-28",
-   "cost_type": "有人対応オプション",
-   "amount": 54206,
+   "cost_type": "追加利用料",
+   "amount": 53732,
    "currency": "JPY",
    "unit": "calls"
   },
   {
    "company_code": "ACME-TOKYO",
    "usage_date": "2026-10-28",
-   "cost_type": "通話回線料",
-   "amount": 103738,
+   "cost_type": "通話料",
+   "amount": 38321,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "ACME-TOKYO",
    "usage_date": "2026-10-28",
-   "cost_type": "GPU利用料",
-   "amount": 113114,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "ACME-TOKYO",
-   "usage_date": "2026-10-28",
-   "cost_type": "有人対応オプション",
-   "amount": 64591,
+   "cost_type": "追加利用料",
+   "amount": 66943,
    "currency": "JPY",
    "unit": "calls"
   },
   {
    "company_code": "ACME-OSAKA",
    "usage_date": "2026-05-28",
-   "cost_type": "通話回線料",
-   "amount": 8539,
+   "cost_type": "通話料",
+   "amount": 7331,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "ACME-OSAKA",
    "usage_date": "2026-05-28",
-   "cost_type": "GPU利用料",
-   "amount": 14707,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "ACME-OSAKA",
-   "usage_date": "2026-05-28",
-   "cost_type": "有人対応オプション",
-   "amount": 5011,
+   "cost_type": "追加利用料",
+   "amount": 15551,
    "currency": "JPY",
    "unit": "calls"
   },
   {
    "company_code": "ACME-OSAKA",
    "usage_date": "2026-06-28",
-   "cost_type": "通話回線料",
-   "amount": 7852,
+   "cost_type": "通話料",
+   "amount": 8673,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "ACME-OSAKA",
    "usage_date": "2026-06-28",
-   "cost_type": "GPU利用料",
-   "amount": 13103,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "ACME-OSAKA",
-   "usage_date": "2026-06-28",
-   "cost_type": "有人対応オプション",
-   "amount": 5948,
+   "cost_type": "追加利用料",
+   "amount": 15561,
    "currency": "JPY",
    "unit": "calls"
   },
   {
    "company_code": "ACME-OSAKA",
    "usage_date": "2026-07-28",
-   "cost_type": "通話回線料",
-   "amount": 10916,
+   "cost_type": "通話料",
+   "amount": 7541,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "ACME-OSAKA",
    "usage_date": "2026-07-28",
-   "cost_type": "GPU利用料",
-   "amount": 18108,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "ACME-OSAKA",
-   "usage_date": "2026-07-28",
-   "cost_type": "有人対応オプション",
-   "amount": 5031,
+   "cost_type": "追加利用料",
+   "amount": 15502,
    "currency": "JPY",
    "unit": "calls"
   },
   {
    "company_code": "ACME-OSAKA",
    "usage_date": "2026-08-28",
-   "cost_type": "通話回線料",
-   "amount": 9316,
+   "cost_type": "通話料",
+   "amount": 7116,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "ACME-OSAKA",
    "usage_date": "2026-08-28",
-   "cost_type": "GPU利用料",
-   "amount": 16602,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "ACME-OSAKA",
-   "usage_date": "2026-08-28",
-   "cost_type": "有人対応オプション",
-   "amount": 7064,
+   "cost_type": "追加利用料",
+   "amount": 12256,
    "currency": "JPY",
    "unit": "calls"
   },
   {
    "company_code": "ACME-OSAKA",
    "usage_date": "2026-09-28",
-   "cost_type": "通話回線料",
-   "amount": 8079,
+   "cost_type": "通話料",
+   "amount": 6681,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "ACME-OSAKA",
    "usage_date": "2026-09-28",
-   "cost_type": "GPU利用料",
-   "amount": 13542,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "ACME-OSAKA",
-   "usage_date": "2026-09-28",
-   "cost_type": "有人対応オプション",
-   "amount": 6615,
+   "cost_type": "追加利用料",
+   "amount": 9815,
    "currency": "JPY",
    "unit": "calls"
   },
   {
    "company_code": "ACME-OSAKA",
    "usage_date": "2026-10-28",
-   "cost_type": "通話回線料",
-   "amount": 9448,
+   "cost_type": "通話料",
+   "amount": 7279,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "ACME-OSAKA",
    "usage_date": "2026-10-28",
-   "cost_type": "GPU利用料",
-   "amount": 12284,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "ACME-OSAKA",
-   "usage_date": "2026-10-28",
-   "cost_type": "有人対応オプション",
-   "amount": 5722,
+   "cost_type": "追加利用料",
+   "amount": 11896,
    "currency": "JPY",
    "unit": "calls"
   },
   {
    "company_code": "MIDORI-MAIN",
    "usage_date": "2026-06-28",
-   "cost_type": "通話回線料",
-   "amount": 8982,
+   "cost_type": "通話料",
+   "amount": 9097,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "MIDORI-MAIN",
    "usage_date": "2026-06-28",
-   "cost_type": "GPU利用料",
-   "amount": 15736,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "MIDORI-MAIN",
-   "usage_date": "2026-06-28",
-   "cost_type": "有人対応オプション",
-   "amount": 4971,
+   "cost_type": "追加利用料",
+   "amount": 15090,
    "currency": "JPY",
    "unit": "calls"
   },
   {
    "company_code": "MIDORI-MAIN",
    "usage_date": "2026-07-28",
-   "cost_type": "通話回線料",
-   "amount": 9103,
+   "cost_type": "通話料",
+   "amount": 6707,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "MIDORI-MAIN",
    "usage_date": "2026-07-28",
-   "cost_type": "GPU利用料",
-   "amount": 12490,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "MIDORI-MAIN",
-   "usage_date": "2026-07-28",
-   "cost_type": "有人対応オプション",
-   "amount": 7523,
+   "cost_type": "追加利用料",
+   "amount": 11645,
    "currency": "JPY",
    "unit": "calls"
   },
   {
    "company_code": "MIDORI-MAIN",
    "usage_date": "2026-08-28",
-   "cost_type": "通話回線料",
-   "amount": 9044,
+   "cost_type": "通話料",
+   "amount": 9223,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "MIDORI-MAIN",
    "usage_date": "2026-08-28",
-   "cost_type": "GPU利用料",
-   "amount": 17956,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "MIDORI-MAIN",
-   "usage_date": "2026-08-28",
-   "cost_type": "有人対応オプション",
-   "amount": 6056,
+   "cost_type": "追加利用料",
+   "amount": 14128,
    "currency": "JPY",
    "unit": "calls"
   },
   {
    "company_code": "MIDORI-MAIN",
    "usage_date": "2026-09-28",
-   "cost_type": "通話回線料",
-   "amount": 10306,
+   "cost_type": "通話料",
+   "amount": 6732,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "MIDORI-MAIN",
    "usage_date": "2026-09-28",
-   "cost_type": "GPU利用料",
-   "amount": 13568,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "MIDORI-MAIN",
-   "usage_date": "2026-09-28",
-   "cost_type": "有人対応オプション",
-   "amount": 5419,
+   "cost_type": "追加利用料",
+   "amount": 11285,
    "currency": "JPY",
    "unit": "calls"
   },
   {
    "company_code": "MIDORI-MAIN",
    "usage_date": "2026-10-28",
-   "cost_type": "通話回線料",
-   "amount": 11407,
+   "cost_type": "通話料",
+   "amount": 8820,
    "currency": "JPY",
    "unit": "minutes"
   },
   {
    "company_code": "MIDORI-MAIN",
    "usage_date": "2026-10-28",
-   "cost_type": "GPU利用料",
-   "amount": 16166,
-   "currency": "JPY",
-   "unit": "hours"
-  },
-  {
-   "company_code": "MIDORI-MAIN",
-   "usage_date": "2026-10-28",
-   "cost_type": "有人対応オプション",
-   "amount": 6358,
+   "cost_type": "追加利用料",
+   "amount": 11810,
    "currency": "JPY",
    "unit": "calls"
   }
@@ -2542,7 +2406,7 @@
    "billing_period_end": "2026-05-28",
    "issued_date": "2026-06-05",
    "due_date": "2026-06-25",
-   "total_amount": 1277790,
+   "total_amount": 612336,
    "currency": "JPY",
    "status": "paid"
   },
@@ -2553,7 +2417,7 @@
    "billing_period_end": "2026-06-28",
    "issued_date": "2026-07-05",
    "due_date": "2026-07-25",
-   "total_amount": 1277477,
+   "total_amount": 611178,
    "currency": "JPY",
    "status": "paid"
   },
@@ -2564,7 +2428,7 @@
    "billing_period_end": "2026-07-28",
    "issued_date": "2026-08-05",
    "due_date": "2026-08-25",
-   "total_amount": 1237434,
+   "total_amount": 599012,
    "currency": "JPY",
    "status": "paid"
   },
@@ -2575,7 +2439,7 @@
    "billing_period_end": "2026-08-28",
    "issued_date": "2026-09-05",
    "due_date": "2026-09-25",
-   "total_amount": 1242392,
+   "total_amount": 597617,
    "currency": "JPY",
    "status": "paid"
   },
@@ -2586,7 +2450,7 @@
    "billing_period_end": "2026-09-28",
    "issued_date": "2026-10-05",
    "due_date": "2026-10-25",
-   "total_amount": 1283029,
+   "total_amount": 587491,
    "currency": "JPY",
    "status": "paid"
   },
@@ -2597,7 +2461,7 @@
    "billing_period_end": "2026-10-28",
    "issued_date": "2026-11-05",
    "due_date": "2026-11-25",
-   "total_amount": 1281443,
+   "total_amount": 605264,
    "currency": "JPY",
    "status": "pending"
   },
@@ -2608,7 +2472,7 @@
    "billing_period_end": "2026-05-28",
    "issued_date": "2026-06-05",
    "due_date": "2026-06-25",
-   "total_amount": 148257,
+   "total_amount": 122882,
    "currency": "JPY",
    "status": "paid"
   },
@@ -2619,7 +2483,7 @@
    "billing_period_end": "2026-06-28",
    "issued_date": "2026-07-05",
    "due_date": "2026-07-25",
-   "total_amount": 146903,
+   "total_amount": 124234,
    "currency": "JPY",
    "status": "paid"
   },
@@ -2630,7 +2494,7 @@
    "billing_period_end": "2026-07-28",
    "issued_date": "2026-08-05",
    "due_date": "2026-08-25",
-   "total_amount": 154055,
+   "total_amount": 123043,
    "currency": "JPY",
    "status": "paid"
   },
@@ -2641,7 +2505,7 @@
    "billing_period_end": "2026-08-28",
    "issued_date": "2026-09-05",
    "due_date": "2026-09-25",
-   "total_amount": 152982,
+   "total_amount": 119372,
    "currency": "JPY",
    "status": "paid"
   },
@@ -2652,7 +2516,7 @@
    "billing_period_end": "2026-09-28",
    "issued_date": "2026-10-05",
    "due_date": "2026-10-25",
-   "total_amount": 148236,
+   "total_amount": 116496,
    "currency": "JPY",
    "status": "paid"
   },
@@ -2663,7 +2527,7 @@
    "billing_period_end": "2026-10-28",
    "issued_date": "2026-11-05",
    "due_date": "2026-11-25",
-   "total_amount": 147454,
+   "total_amount": 119175,
    "currency": "JPY",
    "status": "pending"
   },
@@ -2674,7 +2538,7 @@
    "billing_period_end": "2026-06-28",
    "issued_date": "2026-07-05",
    "due_date": "2026-07-25",
-   "total_amount": 149689,
+   "total_amount": 124187,
    "currency": "JPY",
    "status": "paid"
   },
@@ -2685,7 +2549,7 @@
    "billing_period_end": "2026-07-28",
    "issued_date": "2026-08-05",
    "due_date": "2026-08-25",
-   "total_amount": 149116,
+   "total_amount": 118352,
    "currency": "JPY",
    "status": "paid"
   },
@@ -2696,7 +2560,7 @@
    "billing_period_end": "2026-08-28",
    "issued_date": "2026-09-05",
    "due_date": "2026-09-25",
-   "total_amount": 153056,
+   "total_amount": 123351,
    "currency": "JPY",
    "status": "paid"
   },
@@ -2707,7 +2571,7 @@
    "billing_period_end": "2026-09-28",
    "issued_date": "2026-10-05",
    "due_date": "2026-10-25",
-   "total_amount": 149293,
+   "total_amount": 118017,
    "currency": "JPY",
    "status": "paid"
   },
@@ -2718,7 +2582,7 @@
    "billing_period_end": "2026-10-28",
    "issued_date": "2026-11-05",
    "due_date": "2026-11-25",
-   "total_amount": 153931,
+   "total_amount": 120630,
    "currency": "JPY",
    "status": "pending"
   }
@@ -3089,21 +2953,21 @@
   {
    "company_code": "ACME-TOKYO",
    "amount": 50000,
-   "reason": "導入支援クレジット",
+   "reason": "初期クレジット",
    "granted_at": "2026-01-10",
    "expires_at": null
   },
   {
    "company_code": "ACME-OSAKA",
    "amount": 50000,
-   "reason": "導入支援クレジット",
+   "reason": "初期クレジット",
    "granted_at": "2026-04-01",
    "expires_at": null
   },
   {
    "company_code": "MIDORI-MAIN",
    "amount": 50000,
-   "reason": "導入支援クレジット",
+   "reason": "初期クレジット",
    "granted_at": "2026-05-01",
    "expires_at": null
   }

@@ -494,7 +494,7 @@ export function createDemoApi(identity: DemoIdentity, data: Fixture = fixture, s
           faq_id: input.faq_id,
           entered_by: 'demo',
         });
-        // 従量課金オプションの契約だけ、通話ごとの料金を加算する（月額定額では料金なし）
+        // 従量課金の契約だけ、通話ごとの料金を加算する（月額定額では料金なし）
         const lic = data.licenses.find((l) => l.company_code === code);
         if (lic?.billing_model === 'metered' && lic.per_call_fee) {
           s.extraCosts.push({ company_code: code, usage_date: started.slice(0, 10), cost_type: '通話処理料', amount: lic.per_call_fee });

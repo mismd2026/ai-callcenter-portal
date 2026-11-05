@@ -430,7 +430,7 @@ export default function CustomerDashboard() {
                         </div>
                         {data.credit_applied > 0 && (
                           <div className="flex justify-between text-sm">
-                            <span className="text-[#0F9B8E]">導入支援クレジット</span>
+                            <span className="text-[#0F9B8E]">クレジット</span>
                             <span className="font-mono text-[#0F9B8E]">−{formatMoney(data.credit_applied, data.currency)}</span>
                           </div>
                         )}

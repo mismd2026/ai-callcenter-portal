@@ -45,7 +45,7 @@ def test_inquiry_breakdown_sums_to_100(client):
 
 def test_billing_total_is_license_plus_usage(client):
     data = client.get("/api/company/billing?period=2026-07", headers=TOKYO).json()
-    assert data["breakdown"][0] == {"label": "基本ライセンス料", "amount": 1000000}
+    assert data["breakdown"][0] == {"label": "基本ライセンス料", "amount": 500000}
     assert data["subtotal"] == sum(b["amount"] for b in data["breakdown"])
     assert data["total"] == data["subtotal"] - data["credit_applied"]
 
@@ -67,7 +67,7 @@ def test_ops_companies_show_live_status(client):
     assert tokyo["active_calls"] == live["active_calls"]
     assert tokyo["escalations_today"] == live["escalations_today"]
     assert tokyo["unanswered_today"] == live["unanswered_today"]
-    assert tokyo["concurrent_call_limit"] == 100
+    assert tokyo["concurrent_call_limit"] == 50
 
 
 def test_ops_users_by_tenant(client):
